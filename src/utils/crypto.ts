@@ -25,7 +25,8 @@ export function decryptNumber(encrypted: string): number {
 
 export function generateTicketUrl(num: number): string {
   const encryptedNum = encryptNumber(num);
-  return `${window.location.origin}/ticket?token=${encryptedNum}`;
+  const timestamp = Date.now();
+  return `${window.location.origin}/ticket?token=${encryptedNum}&timestamp=${timestamp}`;
 }
 
 export function parseTicketUrl(url: string): number | null {

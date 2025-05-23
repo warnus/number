@@ -1,24 +1,27 @@
 import { useLocation, useParams } from 'react-router-dom';
 import { parseTicketUrl } from '../utils/crypto';
+import { format } from 'date-fns';
+import { ko } from 'date-fns/locale';
 
 export default function TicketPage() {
   const location = useLocation();
   const { token: urlToken } = useParams<{ token?: string }>();
   const searchParams = new URLSearchParams(location.search);
-  const queryToken = searchParams.get('token') || '';
-  
   let ticketNum: number | null = null;
   try {
     // If token exists in URL params, use it directly
     if (urlToken) {
       ticketNum = parseTicketUrl(`?token=${urlToken}`);
-    } else if (queryToken) {
+    } else {
       ticketNum = parseTicketUrl(location.search);
     }
   } catch (error) {
     console.error('Ticket parsing error:', error);
     ticketNum = null;
   }
+
+  const timestamp = searchParams.get('timestamp');
+  const formattedTimestamp = timestamp ? format(Number(timestamp), 'yyyy년 MM월 dd일 HH:mm:ss', { locale: ko }) : '발급 시간 정보 없음';
 
   if (!ticketNum || ticketNum <= 0) {
     return <div className="p-6 max-w-md mx-auto mt-20 border rounded shadow">잘못된 접근입니다.</div>;
@@ -34,6 +37,10 @@ export default function TicketPage() {
           <div className="text-center mb-6">
             <h2 className="text-xl font-semibold mb-2">당신의 번호</h2>
             <p className="text-5xl font-bold text-blue-600">#{ticketNum}</p>
+          </div>
+          <div className="text-center">
+            <h2 className="text-xl font-semibold mb-2">발급 시간</h2>
+            <p className="text-lg text-gray-600">{formattedTimestamp}</p>
           </div>
         </div>
       </div>

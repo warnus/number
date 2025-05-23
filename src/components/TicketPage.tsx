@@ -34,7 +34,7 @@ export default function TicketPage() {
         </div>
         <div className="mb-8">
           <div className="text-center mb-6">
-            <h2 className="text-xl font-semibold mb-2">당신의 번호</h2>
+            <h2 className="text-xl font-semibold mb-2">고객님의 번호</h2>
             <p className="text-5xl font-bold text-blue-600">#{ticketInfo.number}</p>
           </div>
           <div className="text-center">

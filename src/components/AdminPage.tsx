@@ -13,8 +13,13 @@ export default function AdminPage() {
   );
   const [qrUrl, setQrUrl] = React.useState<string>('');
   const [isSettingsModalOpen, setIsSettingsModalOpen] = React.useState(false);
-  const [tempCurrentNumber, setTempCurrentNumber] = React.useState(currentNumber);
-  const [tempLastIssuedNumber, setTempLastIssuedNumber] = React.useState(lastIssuedNumber);
+  const [tempCurrentNumber, setTempCurrentNumber] = React.useState<number | null>(currentNumber || null);
+  const [tempLastIssuedNumber, setTempLastIssuedNumber] = React.useState<number | null>(lastIssuedNumber || null);
+
+  React.useEffect(() => {
+    setTempCurrentNumber(currentNumber);
+    setTempLastIssuedNumber(lastIssuedNumber);
+  }, [currentNumber, lastIssuedNumber]);
 
   React.useEffect(() => {
     const initialQrUrl = generateTicketUrl(lastIssuedNumber);
@@ -22,15 +27,19 @@ export default function AdminPage() {
   }, [lastIssuedNumber]);
 
   const handleSaveSettings = () => {
-    if (tempCurrentNumber > tempLastIssuedNumber) {
+    if (tempCurrentNumber !== null && tempLastIssuedNumber !== null && tempCurrentNumber > tempLastIssuedNumber) {
       alert('현재 번호는 마지막 발급 번호보다 클 수 없습니다.');
       return;
     }
     
-    localStorage.setItem('currentNumber', tempCurrentNumber.toString());
-    localStorage.setItem('lastIssuedNumber', tempLastIssuedNumber.toString());
-    setCurrentNumber(tempCurrentNumber);
-    setLastIssuedNumber(tempLastIssuedNumber);
+    if (tempCurrentNumber !== null && tempLastIssuedNumber !== null) {
+      localStorage.setItem('currentNumber', tempCurrentNumber.toString());
+      localStorage.setItem('lastIssuedNumber', tempLastIssuedNumber.toString());
+    }
+    if (tempCurrentNumber !== null && tempLastIssuedNumber !== null) {
+      setCurrentNumber(tempCurrentNumber);
+      setLastIssuedNumber(tempLastIssuedNumber);
+    }
     setIsSettingsModalOpen(false);
   };
 
@@ -143,8 +152,15 @@ export default function AdminPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">현재 번호</label>
                 <input
                   type="number"
-                  value={tempCurrentNumber}
-                  onChange={(e) => setTempCurrentNumber(Number(e.target.value))}
+                  value={tempCurrentNumber ?? ''}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === '') {
+                      setTempCurrentNumber(null);
+                    } else {
+                      setTempCurrentNumber(Number(value));
+                    }
+                  }}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
@@ -152,8 +168,15 @@ export default function AdminPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">마지막 발급 번호</label>
                 <input
                   type="number"
-                  value={tempLastIssuedNumber}
-                  onChange={(e) => setTempLastIssuedNumber(Number(e.target.value))}
+                  value={tempLastIssuedNumber ?? ''}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === '') {
+                      setTempLastIssuedNumber(null);
+                    } else {
+                      setTempLastIssuedNumber(Number(value));
+                    }
+                  }}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>

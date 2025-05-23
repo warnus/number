@@ -11,12 +11,12 @@ export default function AdminPage() {
   const [lastIssuedNumber, setLastIssuedNumber] = React.useState<number>(() =>
     Number(localStorage.getItem('lastIssuedNumber') || '0')
   );
+  const [qrUrl, setQrUrl] = React.useState<string>('');
 
-
-
-
-
-  const qrUrl = generateTicketUrl(lastIssuedNumber);
+  React.useEffect(() => {
+    const initialQrUrl = generateTicketUrl(lastIssuedNumber);
+    setQrUrl(initialQrUrl);
+  }, [lastIssuedNumber]);
 
   return (
     <div className="min-h-screen bg-white p-4">
@@ -38,9 +38,14 @@ export default function AdminPage() {
         <div className="space-y-4 mb-8">
           <button
             onClick={() => {
-              const newNumber = lastIssuedNumber + 1;
-              localStorage.setItem('lastIssuedNumber', newNumber.toString());
-              setLastIssuedNumber(newNumber);
+              // Update current number (processing completed)
+              const nextNumber = currentNumber + 1;
+              if (nextNumber <= lastIssuedNumber) {
+                localStorage.setItem('currentNumber', nextNumber.toString());
+                setCurrentNumber(nextNumber);
+              } else {
+                alert('마지막 발급 번호를 초과할 수 없습니다.');
+              }
             }}
             className="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-lg font-semibold"
           >
@@ -48,16 +53,32 @@ export default function AdminPage() {
           </button>
           <button
             onClick={() => {
+              // Issue new number
               const newNumber = lastIssuedNumber + 1;
               localStorage.setItem('lastIssuedNumber', newNumber.toString());
               setLastIssuedNumber(newNumber);
-              const newCurrent = currentNumber + 1;
-              localStorage.setItem('currentNumber', newCurrent.toString());
-              setCurrentNumber(newCurrent);
+              
+              // Generate new QR code
+              const qrUrl = generateTicketUrl(newNumber);
+              setQrUrl(qrUrl);
             }}
             className="w-full px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 text-lg font-semibold"
           >
             번호 발급
+          </button>
+          <button
+            onClick={() => {
+              if (window.confirm('모든 번호를 초기화하시겠습니까?')) {
+                localStorage.setItem('currentNumber', '0');
+                localStorage.setItem('lastIssuedNumber', '0');
+                setCurrentNumber(0);
+                setLastIssuedNumber(0);
+                setQrUrl('');
+              }
+            }}
+            className="w-full bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+          >
+            번호 초기화
           </button>
           <button
             onClick={() => {

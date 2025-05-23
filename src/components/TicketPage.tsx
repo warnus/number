@@ -1,4 +1,3 @@
-import React from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { parseTicketUrl } from '../utils/crypto';
 
@@ -20,10 +19,6 @@ export default function TicketPage() {
     console.error('Ticket parsing error:', error);
     ticketNum = null;
   }
-  const currentNumber = React.useMemo(() =>
-    Number(localStorage.getItem('currentNumber') || '0'),
-    []
-  );
 
   if (!ticketNum || ticketNum <= 0) {
     return <div className="p-6 max-w-md mx-auto mt-20 border rounded shadow">잘못된 접근입니다.</div>;

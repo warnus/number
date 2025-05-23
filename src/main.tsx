@@ -170,11 +170,13 @@ const AdminPage: React.FC = () => {
 function TicketPage() {
   const query = useQuery();
   const num = Number(query.get('num'));
-  const [currentNumber, setCurrentNumber] = React.useState(() =>
-    Number(localStorage.getItem('currentNumber') || '0')
+  const currentNumber = React.useMemo(() =>
+    Number(localStorage.getItem('currentNumber') || '0'),
+    []
   );
-  const [lastIssuedNumber] = React.useState(() =>
-    Number(localStorage.getItem('lastIssuedNumber') || '0')
+  const lastIssuedNumber = React.useMemo(() =>
+    Number(localStorage.getItem('lastIssuedNumber') || '0'),
+    []
   );
 
   if (!num) {

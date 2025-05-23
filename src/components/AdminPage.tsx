@@ -1,10 +1,10 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
 import { generateTicketUrl } from '../utils/crypto';
 
 export default function AdminPage() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [currentNumber, setCurrentNumber] = React.useState<number>(() =>
     Number(localStorage.getItem('currentNumber') || '0')
   );

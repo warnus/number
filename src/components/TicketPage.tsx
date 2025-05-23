@@ -1,12 +1,12 @@
 import { useLocation, useParams } from 'react-router-dom';
-import { parseTicketUrl, decryptTimestamp } from '../utils/crypto';
+import { parseTicketUrl } from '../utils/crypto';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
 export default function TicketPage() {
   const location = useLocation();
   const { token: urlToken } = useParams<{ token?: string }>();
-  const searchParams = new URLSearchParams(location.search);
+
   let ticketInfo: { number: number | null, timestamp: number | null } = { number: null, timestamp: null };
   try {
     // If token exists in URL params, use it directly

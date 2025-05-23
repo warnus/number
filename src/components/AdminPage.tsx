@@ -56,7 +56,6 @@ export default function AdminPage() {
           <div className="flex justify-between items-center mb-8">
             <div>
               <h1 className="text-3xl font-bold mb-4">관리자 페이지</h1>
-              <p className="text-xl text-gray-600">마지막 발급 번호: <span className="text-2xl font-bold text-blue-600">#{lastIssuedNumber}</span></p>
             </div>
             <button
               onClick={() => setIsSettingsModalOpen(true)}
@@ -123,7 +122,7 @@ export default function AdminPage() {
             >
               번호 초기화
             </button>
-            <button
+            {/* <button
               onClick={() => {
                 localStorage.removeItem('isAdmin');
                 navigate('/');
@@ -131,7 +130,7 @@ export default function AdminPage() {
               className="w-full bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
             >
               로그아웃
-            </button>
+            </button> */}
           </div>
           {lastIssuedNumber > 0 ? (
             <div className="mt-8">

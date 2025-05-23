@@ -5,60 +5,95 @@ import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from
 import { QRCodeSVG } from 'qrcode.react';
 import './index.css';
 
-const ADMIN_ID = 'admin';
-const ADMIN_PW = 'admin1234';
+// Add types for URLSearchParams
+interface URLSearchParams {
+  get(key: string): string | null;
+}
 
-function useQuery() {
+// Add types for React components
+interface LoginPageState {
+  id: string;
+  pw: string;
+}
+
+const ADMIN_ID = 'admin' as const;
+const ADMIN_PW = 'admin1234' as const;
+
+function useQuery(): URLSearchParams {
   return new URLSearchParams(useLocation().search);
 }
 
-function LoginPage() {
-  const [id, setId] = React.useState('');
-  const [pw, setPw] = React.useState('');
+const LoginPage: React.FC = () => {
+  const [state, setState] = React.useState<LoginPageState>({ id: '', pw: '' });
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    if (id === ADMIN_ID && pw === ADMIN_PW) {
+  const handleLogin = (): void => {
+    if (state.id === ADMIN_ID && state.pw === ADMIN_PW) {
       localStorage.setItem('isAdmin', 'true');
-      // 로그인 성공하면 /admin으로 이동
       navigate('/admin');
     } else {
       alert('로그인 실패');
     }
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const { name, value } = e.target;
+    setState(prev => ({ ...prev, [name]: value }));
+  };
+
   return (
-    <div className="max-w-md mx-auto mt-20 p-6 border rounded shadow">
-      <h1 className="text-2xl font-bold mb-4">관리자 로그인</h1>
-      <input
-        className="w-full p-2 border mb-3"
-        placeholder="ID"
-        value={id}
-        onChange={e => setId(e.target.value)}
-      />
-      <input
-        type="password"
-        className="w-full p-2 border mb-3"
-        placeholder="PW"
-        value={pw}
-        onChange={e => setPw(e.target.value)}
-      />
-      <button
-        onClick={handleLogin}
-        className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
-      >
-        로그인
-      </button>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="w-full max-w-md">
+        <div className="bg-white p-8 rounded-lg shadow-md">
+          <h2 className="text-2xl font-bold text-center mb-6">로그인</h2>
+          <form onSubmit={(e) => e.preventDefault()}>
+            <div className="mb-4">
+              <label htmlFor="id" className="block text-sm font-medium text-gray-700 mb-1">
+                ID
+              </label>
+              <input
+                type="text"
+                id="id"
+                name="id"
+                value={state.id}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div className="mb-6">
+              <label htmlFor="pw" className="block text-sm font-medium text-gray-700 mb-1">
+                비밀번호
+              </label>
+              <input
+                type="password"
+                id="pw"
+                name="pw"
+                value={state.pw}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={handleLogin}
+              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+              로그인
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
   );
-}
+};
 
-function AdminPage() {
+const AdminPage: React.FC = () => {
   const navigate = useNavigate();
-  const [currentNumber, setCurrentNumber] = React.useState(() =>
-    Number(localStorage.getItem('currentNumber') || '0')
+  const currentNumber = React.useMemo(() =>
+    Number(localStorage.getItem('currentNumber') || '0'),
+    []
   );
-  const [lastIssuedNumber, setLastIssuedNumber] = React.useState(() =>
+  const [lastIssuedNumber, setLastIssuedNumber] = React.useState<number>(() =>
     Number(localStorage.getItem('lastIssuedNumber') || '0')
   );
 
@@ -68,65 +103,69 @@ function AdminPage() {
     }
   }, [navigate]);
 
-  const issueNextNumber = () => {
-    const next = lastIssuedNumber + 1;
-    localStorage.setItem('lastIssuedNumber', String(next));
-    setLastIssuedNumber(next);
+  const handleNextNumber = () => {
+    localStorage.setItem('currentNumber', (currentNumber + 1).toString());
   };
 
-  const processNextNumber = () => {
-    if (currentNumber < lastIssuedNumber) {
-      const next = currentNumber + 1;
-      localStorage.setItem('currentNumber', String(next));
-      setCurrentNumber(next);
-    }
+  const handleIssueNumber = () => {
+    setLastIssuedNumber(prev => {
+      const next = prev + 1;
+      localStorage.setItem('lastIssuedNumber', next.toString());
+      return next;
+    });
   };
 
   const qrUrl = `${window.location.origin}/ticket?num=${lastIssuedNumber}`;
 
   return (
-    <div className="max-w-md mx-auto mt-20 p-6 border rounded shadow">
-      <h1 className="text-2xl font-bold mb-4">관리자 페이지</h1>
-      <div className="mb-4">
-        <p>현재 처리 번호: <span className="font-bold">{currentNumber}</span></p>
-        <p>마지막 배부 번호: <span className="font-bold">{lastIssuedNumber}</span></p>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow">
+        <h1 className="text-2xl font-bold mb-6">관리자 페이지</h1>
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold mb-2">현재 번호</h2>
+          <p className="text-3xl font-bold text-blue-600">#{currentNumber}</p>
+        </div>
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold mb-2">마지막 발급 번호</h2>
+          <p className="text-3xl font-bold text-blue-600">#{lastIssuedNumber}</p>
+        </div>
+        <div className="space-y-4">
+          <button
+            onClick={handleNextNumber}
+            className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+          >
+            다음 번호 호출
+          </button>
+          <button
+            onClick={handleIssueNumber}
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            번호 발급
+          </button>
+          <button
+            onClick={() => {
+              localStorage.removeItem('isAdmin');
+              navigate('/');
+            }}
+            className="w-full bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+          >
+            로그아웃
+          </button>
+        </div>
+        <div className="mt-8">
+          {lastIssuedNumber > 0 ? (
+            <div>
+              <h2 className="text-lg font-semibold mb-2">QR 코드</h2>
+              <QRCodeSVG value={qrUrl} size={180} className="mx-auto" />
+            </div>
+          ) : (
+            <p className="text-gray-500">번호를 먼저 발급하세요.</p>
+          )}
+        </div>
       </div>
-      <div className="flex gap-2 mb-4">
-        <button
-          onClick={issueNextNumber}
-          className="flex-1 bg-green-600 text-white py-2 rounded hover:bg-green-700"
-        >
-          다음 번호 발급
-        </button>
-        <button
-          onClick={processNextNumber}
-          className="flex-1 bg-yellow-600 text-white py-2 rounded hover:bg-yellow-700"
-          disabled={currentNumber >= lastIssuedNumber}
-          title={currentNumber >= lastIssuedNumber ? '더 이상 처리할 번호가 없습니다.' : ''}
-        >
-          다음 번호 처리
-        </button>
-      </div>
-      <div className="mb-4">
-        <p className="mb-2">마지막 배부된 번호 QR 코드:</p>
-        {lastIssuedNumber > 0 ? (
-          <QRCodeSVG value={qrUrl} size={180} />
-        ) : (
-          <p className="text-gray-500">번호를 먼저 발급하세요.</p>
-        )}
-      </div>
-      <button
-        onClick={() => {
-          localStorage.removeItem('isAdmin');
-          navigate('/login');
-        }}
-        className="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700"
-      >
-        로그아웃
-      </button>
     </div>
   );
-}
+};
 
 function TicketPage() {
   const query = useQuery();

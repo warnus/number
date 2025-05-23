@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/ticket",
+      "destination": "/index.html"
+    }
+  ]
+}

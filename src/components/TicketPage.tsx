@@ -34,26 +34,12 @@ export default function TicketPage() {
       <div className="max-w-sm mx-auto bg-white rounded-lg shadow-lg p-6">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-4">번호표 확인</h1>
-          <p className="text-xl text-gray-600">내 번호: <span className="text-2xl font-bold text-blue-600">#{ticketNum}</span></p>
         </div>
         <div className="mb-8">
           <div className="text-center mb-6">
             <h2 className="text-xl font-semibold mb-2">당신의 번호</h2>
             <p className="text-5xl font-bold text-blue-600">#{ticketNum}</p>
           </div>
-          <div className="text-center">
-            <h2 className="text-xl font-semibold mb-2">현재 처리 번호</h2>
-            <p className="text-5xl font-bold text-blue-600">#{currentNumber}</p>
-          </div>
-        </div>
-        <div className="text-center">
-          {ticketNum === currentNumber ? (
-            <p className="text-2xl font-semibold text-green-600">곧 차례입니다!</p>
-          ) : ticketNum < currentNumber ? (
-            <p className="text-xl text-gray-500">이미 처리된 번호입니다.</p>
-          ) : (
-            <p className="text-xl text-blue-600">대기 중입니다.</p>
-          )}
         </div>
       </div>
     </div>

@@ -30,9 +30,13 @@ export function generateTicketUrl(num: number): string {
 
 export function parseTicketUrl(url: string): number | null {
   try {
-    const urlObj = new URL(url);
-    const token = urlObj.searchParams.get('token');
+    // Extract token from URL string
+    const tokenMatch = url.match(/token=([^&]+)/);
+    if (!tokenMatch) return null;
+    
+    const token = decodeURIComponent(tokenMatch[1]);
     if (!token) return null;
+    
     return decryptNumber(token);
   } catch (error) {
     console.error('URL parsing error:', error);

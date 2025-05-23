@@ -12,46 +12,50 @@ export default function AdminPage() {
     Number(localStorage.getItem('lastIssuedNumber') || '0')
   );
 
-  const handleNextNumber = () => {
-    setCurrentNumber(prev => {
-      const next = prev + 1;
-      localStorage.setItem('currentNumber', next.toString());
-      return next;
-    });
-  };
 
-  const handleIssueNumber = () => {
-    setLastIssuedNumber(prev => {
-      const next = prev + 1;
-      localStorage.setItem('lastIssuedNumber', next.toString());
-      return next;
-    });
-  };
+
+
 
   const qrUrl = generateTicketUrl(lastIssuedNumber);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow">
-        <h1 className="text-2xl font-bold mb-6">관리자 페이지</h1>
-        <div className="mb-6">
-          <h2 className="text-lg font-semibold mb-2">현재 번호</h2>
-          <p className="text-3xl font-bold text-blue-600">#{currentNumber}</p>
+    <div className="min-h-screen bg-white p-4">
+      <div className="max-w-sm mx-auto bg-white rounded-lg shadow-lg p-6">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold mb-4">관리자 페이지</h1>
+          <p className="text-xl text-gray-600">마지막 발급 번호: <span className="text-2xl font-bold text-blue-600">#{lastIssuedNumber}</span></p>
         </div>
-        <div className="mb-6">
-          <h2 className="text-lg font-semibold mb-2">마지막 발급 번호</h2>
-          <p className="text-3xl font-bold text-blue-600">#{lastIssuedNumber}</p>
+        <div className="mb-8">
+          <div className="text-center mb-6">
+            <h2 className="text-xl font-semibold mb-2">현재 번호</h2>
+            <p className="text-5xl font-bold text-blue-600">#{currentNumber}</p>
+          </div>
+          <div className="text-center">
+            <h2 className="text-xl font-semibold mb-2">마지막 발급 번호</h2>
+            <p className="text-5xl font-bold text-blue-600">#{lastIssuedNumber}</p>
+          </div>
         </div>
-        <div className="space-y-4">
+        <div className="space-y-4 mb-8">
           <button
-            onClick={handleNextNumber}
-            className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+            onClick={() => {
+              const newNumber = lastIssuedNumber + 1;
+              localStorage.setItem('lastIssuedNumber', newNumber.toString());
+              setLastIssuedNumber(newNumber);
+            }}
+            className="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-lg font-semibold"
           >
             다음 번호 호출
           </button>
           <button
-            onClick={handleIssueNumber}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            onClick={() => {
+              const newNumber = lastIssuedNumber + 1;
+              localStorage.setItem('lastIssuedNumber', newNumber.toString());
+              setLastIssuedNumber(newNumber);
+              const newCurrent = currentNumber + 1;
+              localStorage.setItem('currentNumber', newCurrent.toString());
+              setCurrentNumber(newCurrent);
+            }}
+            className="w-full px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 text-lg font-semibold"
           >
             번호 발급
           </button>

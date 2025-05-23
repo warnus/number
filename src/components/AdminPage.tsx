@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
+import { generateTicketUrl } from '../utils/crypto';
 
 export default function AdminPage() {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ export default function AdminPage() {
     });
   };
 
-  const qrUrl = `${window.location.origin}/ticket?num=${lastIssuedNumber}`;
+  const qrUrl = generateTicketUrl(lastIssuedNumber);
 
   return (
     <div className="min-h-screen bg-gray-50">

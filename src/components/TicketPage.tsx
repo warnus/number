@@ -1,24 +1,25 @@
 import React from 'react';
 import { useLocation, useParams } from 'react-router-dom';
+import { parseTicketUrl } from '../utils/crypto';
 
 export default function TicketPage() {
   const location = useLocation();
-  const { num: urlNum } = useParams<{ num?: string }>();
-  const queryNum = Number(location.search.replace('?num=', ''));
-  const ticketNum = urlNum ? Number(urlNum) : queryNum;
+  const { token: urlToken } = useParams<{ token?: string }>();
+  const queryToken = location.search.replace('?token=', '');
+  const ticketNum = parseTicketUrl(`?token=${urlToken || queryToken}`) || 0;
   const currentNumber = React.useMemo(() =>
     Number(localStorage.getItem('currentNumber') || '0'),
     []
   );
 
-  if (!ticketNum || isNaN(ticketNum)) {
+  if (ticketNum <= 0) {
     return <div className="p-6 max-w-md mx-auto mt-20 border rounded shadow">잘못된 접근입니다.</div>;
   }
 
   return (
     <div className="max-w-md mx-auto mt-20 p-6 border rounded shadow text-center">
       <h1 className="text-2xl font-bold mb-4">번호표 확인</h1>
-      <p className="mb-2 text-lg">내 번호: <span className="font-extrabold">{ticketNum}</span></p>
+      <p className="mb-2 text-lg">내 번호: <span className="font-extrabold">#{ticketNum}</span></p>
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-2">당신의 번호</h2>
         <p className="text-3xl font-bold text-blue-600">#{ticketNum}</p>

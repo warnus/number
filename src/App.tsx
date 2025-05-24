@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './components/LoginPage';
 import AdminPage from './components/AdminPage';
 import TicketPage from './components/TicketPage';
+import { Analytics } from '@vercel/analytics/react';
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
         <Route path="/ticket/:token" element={<TicketPage />} />
         <Route path="*" element={<div className="p-6">페이지를 찾을 수 없습니다.</div>} />
       </Routes>
+      <Analytics />
     </BrowserRouter>
   );
 }

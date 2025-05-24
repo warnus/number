@@ -1,7 +1,7 @@
 {
   "rewrites": [
     {
-      "source": "/ticket",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]

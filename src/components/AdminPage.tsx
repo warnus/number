@@ -12,6 +12,7 @@ export default function AdminPage() {
     Number(localStorage.getItem('lastIssuedNumber') || '0')
   );
   const [qrUrl, setQrUrl] = React.useState<string>('');
+  const [issuanceTime, setIssuanceTime] = React.useState<string>('');
   const [isSettingsModalOpen, setIsSettingsModalOpen] = React.useState(false);
   const [tempCurrentNumber, setTempCurrentNumber] = React.useState<number | null>(currentNumber || null);
   const [tempLastIssuedNumber, setTempLastIssuedNumber] = React.useState<number | null>(lastIssuedNumber || null);
@@ -55,7 +56,7 @@ export default function AdminPage() {
         <div className="max-w-sm mx-auto bg-white rounded-lg shadow-lg p-6 relative">
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h1 className="text-3xl font-bold mb-4">관리자 페이지</h1>
+              <h1 className="text-xl font-bold mb-4">관리자 페이지</h1>
             </div>
             <button
               onClick={() => setIsSettingsModalOpen(true)}
@@ -103,6 +104,18 @@ export default function AdminPage() {
                 // Generate new QR code
                 const qrUrl = generateTicketUrl(newNumber);
                 setQrUrl(qrUrl);
+                
+                // Set issuance time
+                const now = new Date();
+                const formattedTime = now.toLocaleString('ko-KR', {
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit'
+                });
+                setIssuanceTime(formattedTime);
               }}
               className="w-full px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 text-lg font-semibold"
             >
@@ -135,6 +148,7 @@ export default function AdminPage() {
           {lastIssuedNumber > 0 ? (
             <div className="mt-8">
               <h2 className="text-lg font-semibold mb-2">QR 코드</h2>
+              <p className="text-center text-gray-600 mb-4">발급 시간: {issuanceTime}</p>
               <QRCodeSVG value={qrUrl} size={180} className="mx-auto" />
             </div>
           ) : (

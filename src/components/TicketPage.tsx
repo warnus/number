@@ -27,19 +27,24 @@ export default function TicketPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white p-4">
-      <div className="max-w-sm mx-auto bg-white rounded-lg shadow-lg p-6">
+    <div className="h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center p-4">
+      <div className="w-full bg-white rounded-xl shadow-2xl p-8 border-2 border-gray-200 relative overflow-hidden">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-4">번호표 확인</h1>
+          <h1 className="text-3xl font-bold mb-4 text-gray-800">번호표</h1>
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-gray-100 to-transparent opacity-20"></div>
         </div>
         <div className="mb-8">
           <div className="text-center mb-6">
-            <h2 className="text-xl font-semibold mb-2">고객님의 번호</h2>
-            <p className="text-5xl font-bold text-blue-600">#{ticketInfo.number}</p>
+            <h2 className="text-xl font-semibold mb-4 text-gray-700">고객님의 번호</h2>
+            <div className="relative">
+              <p className="text-6xl font-bold text-blue-700 mb-4">#{ticketInfo.number}</p>
+            </div>
+            <p className="text-lg text-gray-600 mb-6">기다려 주셔서 감사합니다.</p>
           </div>
           <div className="text-center">
-            <h2 className="text-xl font-semibold mb-2">발급 시간</h2>
-            <p className="text-lg text-gray-600">{formattedTimestamp}</p>
+            <div className="mt-8 text-center">
+              <p className="text-sm text-gray-500">발급 시간: {formattedTimestamp}</p>
+            </div>
           </div>
         </div>
       </div>
